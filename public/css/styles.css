@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #747474;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+form {
+    background: rgb(187, 187, 187);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+input, button {
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+p{
+    text-align: center;
+}
+
+.alert{
+    text-align: center;
+    color:red;
+    font-family:Arial, Helvetica, sans-serif;
+}
