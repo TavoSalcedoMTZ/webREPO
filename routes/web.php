@@ -1,20 +1,35 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 
 
+
 Route::get('/', function () {
-    return view ("welcome");
+    return view('welcome');
 });
 
 
-Route::get('/register', [UserController::class, 'showRegister'])->name('register');
-Route::post('/register', [UserController::class, 'register'])->name('register.store');
+Route::view('/contacto', 'contacto')->name('contacto');
 
 
-Route::get('/login', [UserController::class, 'showLogin'])->name('login');
-Route::post('/login', [UserController::class, 'login'])->name('login.store');
+Auth::routes(); 
 
-Route::get('/test',[UserController::class, 'test']);
-Route::get('/test/{variable}',[UserController::class, 'test']);
+
+Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+
+    // Perfil de usuario
+    Route::get('/perfil', [UserController::class, 'edit'])->name('perfil');
+    Route::post('/perfil', [UserController::class, 'update'])->name('perfil.update');
+});
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -5,58 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class UserController extends Controller
 {
-    // Muestra el formulario de registro
-    public function showRegister()
+    public function edit()
     {
-        return view('register');
+        return view('perfil', ['user' => Auth::user()]);
     }
 
-    // Procesa el formulario de registro
-    public function register(Request $request)
+    public function update(Request $request)
     {
+        $user = Auth::user();
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $user->name = $request->name;
+        $user->email = $request->email;
 
-        return redirect()->route('login'); 
-    }
-   
-    public function showLogin()
-    {
-        return view('login');
-    }
-
-    
-    public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
-            echo "Usuario autenticado: " . Auth::user()->name;
-            echo "Correo: " .Auth::user()->email;
-
-            test();
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
         }
 
+        $user->save();
 
-    }
-
-    public function test(Request $request, string $name='Aguila'){
-        $array=['Nombre'=> $name
-        ,'Email'=>'prueba'
-    ];
-        return view ('test',['data'=>$array]);
+        return back()->with('success', 'Perfil actualizado.');
     }
 }
